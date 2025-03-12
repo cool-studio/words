@@ -1,0 +1,47 @@
+name: Update Words PHP Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-words-php:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+        with:
+          path: current-repo
+
+      - name: Checkout words-php repository
+        uses: actions/checkout@v3
+        with:
+          repository: cool-studio/words-php
+          ref: development
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: words-php
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run generate.js
+        run: |
+          cd words-php
+          npm install # Install dependencies if needed
+          node generate.js
+
+      - name: Configure Git
+        run: |
+          cd words-php
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Commit and push changes
+        run: |
+          cd words-php
+          git add .
+          git commit -m "Auto-update from word lists" || echo "No changes to commit"
+          git push origin development
