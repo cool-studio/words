@@ -43,5 +43,5 @@ jobs:
         run: |
           cd words-php
           git add .
-          git commit -m "Auto-update from word lists" || echo "No changes to commit"
+          git commit -m "chore: update word lists" || echo "No changes to commit"
           git push origin development
